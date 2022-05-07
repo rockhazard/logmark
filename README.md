@@ -28,7 +28,11 @@ This program eases transitioning to Logseq for those who have organized their no
 
 ## Usage
 
-`logmark.py --help`
+- `logmark.py --help`
+
+## Requires
+
+- python 3.5+
 
 ## Current Issues/Limitations
 
