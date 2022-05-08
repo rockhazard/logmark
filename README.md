@@ -5,15 +5,20 @@
 Logmark converts directory-organized markdown files for use with Logseq by adding the parent directories of each file as [[page]] references in the files.
 
 For example, if you have a markdown file:
-_/home/user/notes/joplin-backup/webinars/journalism.md_
-The _journalism.md_ file will be given a title and page references like so:
+_/home/user/notes/joplin-backup/webinars/journalism/investigative_journalism.md_
+
+If you run:
+
+`logmark.py --heading 2 /home/user/notes/joplin-backup/ my-exported-notes/`
+
+Then the _journalism.md_ file will be exported to `my-exported-notes/` and edited with a title and page references like so:
 
 ```markdown
-## journalism
+## investigative_journalism
 [[webinars]] [[journalism]]
 ```
 
-_/home/user/notes/joplin-backup_ is ignored as a source of page references because it is assumed that the source directory provided on the commandline is the root of the notes directory. Therefore, anything higher up will start referencing data not related to the target set of files. If you want the root to become a tag (in this example `joplin-backup`) then just move the root to an empty directory and stop your source path with that empty directory. This will mean that all markdown files will have the root added as a page reference.
+_/home/user/notes/joplin-backup_ is ignored as a source of page references because it is assumed that the first source directory provided on the commandline is the root of the notes directory. Therefore, anything higher up will start referencing data not related to the target set of files. If you want the root to become a tag (in this example `joplin-backup`) then just move the root to an empty directory and stop your source path with that empty directory. This will mean that all markdown files will have the root added as a page reference.
 
 ## Why?
 
@@ -34,7 +39,8 @@ This program eases transitioning to Logseq for those who have organized their no
 
 - python 3.5+
 
-## Current Issues/Limitations
+## Current Issues and Limitations
 
 - does not currently preserve/convert image links
 - does not preserve/convert platform-specific tags
+- logmark is intended for use with markdown files only
