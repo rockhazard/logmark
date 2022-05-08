@@ -22,8 +22,8 @@ This program eases transitioning to Logseq for those who have organized their no
 ## Features
 
 - reconstruct your notebook references in Logseq
-- add a list of custom page references at the commandline.
-- avoid duplicating the filename as a heading if it it already used on line 1
+- add a list of custom page references at the commandline
+- avoid duplicating the filename as a heading if it is already used on the first line
 - choose which heading level is used for the page title
 
 ## Usage
