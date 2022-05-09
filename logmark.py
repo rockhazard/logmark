@@ -25,8 +25,8 @@ def build_file_list(notebooks):
 
 
 def build_tags(excluded_tags, md_file_path, write_heading=0, opt_tags=None):
-    # excluded_tags excludes notes' parent dirs from tag list
-    # (e.g. 'docs' in 'docs/notes/file.md' will not become a tag in file.md)
+    """excluded_tags excludes notes' parent dirs from tag list e.g. 'docs' in
+    'docs/notes/file.md' will not become a tag in file.md)"""
     pages = []
     path_tags = p(md_file_path).parts
     for tag in path_tags[excluded_tags:-1]:
@@ -45,10 +45,36 @@ def build_tags(excluded_tags, md_file_path, write_heading=0, opt_tags=None):
     return '{}{}\n'.format(heading, ' '.join(pages))
 
 
+def export_files(input_dir, output_dir, heading, remove_duplicates, tags_list):
+    """process the exporting of the provided files"""
+    if not p(input_dir).exists():
+        sys.exit('source path bad')
+    if not p(output_dir).exists():
+        sys.exit('destination path bad')
+
+    md_paths_list = build_file_list(input_dir)
+    excluded_tags = len(p(input_dir).parts)
+    for md in md_paths_list:
+        insert_heading = heading
+        md_file_lines = read_list(md)
+        # prevent duplicate headings
+        if remove_duplicates:
+            # sometimes the filename is an existing heading in the file
+            # in this case remove_duplicates will prevent repeated headings
+            heading_dupe_test = '{} {}'.format('#' * heading, p(md).stem)
+            if heading_dupe_test in md_file_lines[0:1]:
+                insert_heading = 0
+        tags = build_tags(excluded_tags, md, insert_heading, tags_list)
+        if insert_heading == 0 and '# ' in md_file_lines[0]:
+            md_file_lines.insert(1, tags)
+        else:
+            md_file_lines.insert(0, tags)
+        exported_file_name = output_dir + p(md).name
+        write_list(exported_file_name, md_file_lines)
+
+
 def main():
-    """
-    COMMANDLINE OPTIONS
-    """
+    """COMMANDLINE OPTIONS"""
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=dedent("""\
@@ -69,15 +95,15 @@ def main():
     parser.add_argument('OUTPUT_DIR',
                         help='directory to place the newly-tagged files \
                         (use trailing slash)')
-    parser.add_argument('-l', '--heading',
-                        help='write the filename (with no extension) as the page\
-                         heading with a numerical argument for the heading level \
-                         (e.g. "-l 3" writes "### filename")', type=int,
-                        metavar='HEADING_LEVEL', default=0)
     parser.add_argument('-t', '--tags',
                         help='insert a list of tags at the top of every file \
                         after the directory tags', type=str, nargs='+',
                         default=None)
+    parser.add_argument('-l', '--heading',
+                        help='write the filename (with no extension) as the page\
+                         heading with a numerical argument for the heading level \
+                         (e.g. "-l 3" writes "### filename")', type=int,
+                        metavar='HEADING_LEVEL', default=1)
     parser.add_argument('-d', '--remove_duplicates',
                         help='prevent duplicating headings', action='store_true')
     parser.add_argument('--version', help='print version info then exit',
@@ -85,30 +111,8 @@ def main():
                         action='version')
     args = parser.parse_args()
 
-    if not p(args.INPUT_DIR).exists():
-        sys.exit('source path bad')
-    if not p(args.OUTPUT_DIR).exists():
-        sys.exit('destination path bad')
-
-    md_paths_list = build_file_list(args.INPUT_DIR)
-    excluded_tags = len(p(args.INPUT_DIR).parts)
-    for md in md_paths_list:
-        insert_heading = args.heading
-        md_file_lines = read_list(md)
-        # prevent duplicate headings
-        if args.remove_duplicates:
-            # sometimes the filename is an existing heading in the file
-            # in this case remove_duplicates will prevent repeated headings
-            heading_dupe_test = '{} {}'.format('#' * args.heading, p(md).stem)
-            if heading_dupe_test in md_file_lines[0:1]:
-                insert_heading = 0
-        tags = build_tags(excluded_tags, md, insert_heading, args.tags)
-        if insert_heading == 0 and '# ' in md_file_lines[0]:
-            md_file_lines.insert(1, tags)
-        else:
-            md_file_lines.insert(0, tags)
-        exported_file_name = args.OUTPUT_DIR + p(md).name
-        write_list(exported_file_name, md_file_lines)
+    export_files(args.INPUT_DIR, args.OUTPUT_DIR, args.heading,
+                 args.remove_duplicates, args.tags)
 
 
 if __name__ == '__main__':
