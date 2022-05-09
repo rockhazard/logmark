@@ -13,10 +13,16 @@ import PySimpleGUI as sg  # type: ignore
 # import PySimpleGUIWeb as sg  # type: ignore
 # import PySimpleGUIWx as sg # type: ignore
 
+version = lm.version()
+# sg.SetIcon(icon=None)
 # sg.theme('LightBlue3')
 sg.theme('DarkGrey11')
 sg.set_options(font='Roboto')
+
+# tooltips
 optional_text = 'Optional comma-separated list of tags to add to all files'
+source_dir_tip = 'Please enter an absolute path.'
+output_dir_tip = 'Please enter an absolute path with a trailing "/".'
 layout = [
     # Row  1
     [sg.Text('Choose Heading Level'), sg.Spin([1, 2, 3, 4, 5, 6], pad=(4, 2),
@@ -27,20 +33,21 @@ layout = [
     [sg.Text('Global Tag List'), sg.Input(key='-GLOBAL_TAGS-', border_width=0,
                                           expand_x=True, tooltip=optional_text)],
     # Row  3
-    [sg.Text('Source Directory'), sg.Input(
-        key='-SOURCE_DIR-', expand_x=True, border_width=0)],
+    [sg.Text('Source Directory'), sg.Input(tooltip=source_dir_tip,
+                                           key='-SOURCE_DIR-', expand_x=True,
+                                           border_width=0)],
     # Row  4
-    [sg.Text('Output Directory'), sg.Input(
-        key='-OUTPUT_DIR-', expand_x=True, border_width=0)],
+    [sg.Text('Output Directory'), sg.Input(tooltip=output_dir_tip,
+                                           key='-OUTPUT_DIR-', expand_x=True,
+                                           border_width=0)],
     # Row  5
     [sg.Button('Export', key='-EXPORT-', expand_x=True, border_width=0),
      sg.Button('Help', key='-HELP-', expand_x=True, border_width=0),
      sg.Button('Cancel', key='-CANCEL-', expand_x=True, border_width=0)],
-    # Row  6 (for error reporting)
-    # [sg.Text('Result', enable_events=True, key='-RESULT-')],
 ]
 
-window = sg.Window('Logmark', layout)
+
+window = sg.Window(f'Logmark {version}', layout)
 
 while True:
     event, values = window.read()
@@ -49,7 +56,8 @@ while True:
         try:
             run(['xdg-open', 'https://github.com/rockhazard/logmark'], check=True)
         except CalledProcessError:
-            print('No default browser found: please visit https://github.com/rockhazard/logmark for help.')
+            print(
+                'No default browser found: please visit https://github.com/rockhazard/logmark for help.')
 
     if values['-GLOBAL_TAGS-']:
         global_tags = values['i-GLOBAL_TAGS-'].split(',')

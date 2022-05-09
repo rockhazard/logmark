@@ -17,6 +17,10 @@ from pathlib import Path as p
 from common import read_list, write_list
 
 
+def version():
+    return 'v0.1b "Chedder"'
+
+
 def build_file_list(notebooks):
     files_list = []
     for file in p(notebooks).glob('**/*.md'):
@@ -107,7 +111,7 @@ def main():
     parser.add_argument('-d', '--remove_duplicates',
                         help='prevent duplicating headings', action='store_true')
     parser.add_argument('--version', help='print version info then exit',
-                        version='logmark v0.1 "Chedder" beta, GPL3.0 © 2022, by rockhazard',
+                        version=f'logmark {version()}, GPL3.0 © 2022, by rockhazard',
                         action='version')
     args = parser.parse_args()
 
