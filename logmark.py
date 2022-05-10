@@ -14,22 +14,21 @@ import sys
 from logmark_args import Arguments
 from logmark_cli import CLI
 from logmark_gui import GUI
-# import argparse
-# from textwrap import dedent
-# from pathlib import Path as p
-# from common import read_list, write_list
+from version import VERSION
 
 
 def main():
 
     if len(sys.argv) == 1:
-        gui = GUI()
+        gui = GUI(_version=VERSION)
         gui.main_loop()
     else:
-        lm_cli = CLI()
-        cli_args = Arguments()
-        lm_cli.export_files(cli_args.args.INPUT_DIR, cli_args.args.OUTPUT_DIR, cli_args.args.heading,
-                            cli_args.args.remove_duplicates, cli_args.args.tags)
+        lm_cli = CLI(_version=VERSION)
+        cli_args = Arguments(_version=VERSION)
+        lm_cli.export_files(cli_args.args.INPUT_DIR, cli_args.args.OUTPUT_DIR,
+                            cli_args.args.heading,
+                            cli_args.args.remove_duplicates,
+                            cli_args.args.tags)
 
 
 if __name__ == '__main__':

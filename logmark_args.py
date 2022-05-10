@@ -10,11 +10,10 @@ year: 2022
 author: rockhazard
 """
 
-# import sys
+
 import argparse
 from textwrap import dedent
-# from pathlib import Path as p
-# from common import read_list, write_list
+# from version import VERSION
 
 
 class Arguments:
@@ -23,9 +22,6 @@ class Arguments:
     def __init__(self, **kwargs):  # classwide perams
         # User's home directory
         self._state = kwargs
-        self._state = dict(
-            version='v0.1b "Chedder"',
-        )
 
         self.parser = argparse.ArgumentParser(
             formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -59,14 +55,6 @@ class Arguments:
         self.parser.add_argument('-d', '--remove_duplicates',
                                  help='prevent duplicating headings', action='store_true')
         self.parser.add_argument('--version', help='print version info then exit',
-                                 version=f'logmark {self._state["version"]}, GPL3.0 © 2022, by rockhazard',
+                                 version=f'logmark {self._state["_version"]}, GPL3.0 © 2022, by rockhazard',
                                  action='version')
         self.args = self.parser.parse_args()
-
-
-# def main():
-#     """COMMANDLINE OPTIONS"""
-#     pass
-#
-# if __name__ == '__main__':
-#     sys.exit(main())

@@ -11,14 +11,10 @@ author: rockhazard
 """
 
 import sys
-# import argparse
-# from textwrap import dedent
 from pathlib import Path as p
 from common import read_list, write_list
+# from version import VERSION
 
-
-# def version():
-#     return 'v0.1b "Chedder"'
 
 class CLI:
     """CLI methods"""
@@ -26,9 +22,6 @@ class CLI:
     def __init__(self, **kwargs):  # classwide perams
         # User's home directory
         self._state = kwargs
-        self._state = dict(
-            version='v0.1b "Chedder"',
-        )
 
     def build_file_list(self, notebooks):
         files_list = []
@@ -36,9 +29,10 @@ class CLI:
             files_list.append(str(file))
         return files_list
 
-    def build_tags(self, excluded_tags, md_file_path, write_heading=0, opt_tags=None):
-        """excluded_tags excludes notes' parent dirs from tag list e.g. 'docs' in
-        'docs/notes/file.md' will not become a tag in file.md)"""
+    def build_tags(self, excluded_tags, md_file_path, write_heading=0,
+                   opt_tags=None):
+        """excluded_tags excludes notes' parent dirs from tag list e.g.
+        'docs' in 'docs/notes/file.md' will not become a tag in file.md)"""
         pages = []
         path_tags = p(md_file_path).parts
         for tag in path_tags[excluded_tags:-1]:
@@ -56,7 +50,8 @@ class CLI:
             heading = ''
         return '{}{}\n'.format(heading, ' '.join(pages))
 
-    def export_files(self, input_dir, output_dir, heading, remove_duplicates, tags_list):
+    def export_files(self, input_dir, output_dir, heading, remove_duplicates,
+                     tags_list):
         """process the exporting of the provided files"""
         if not p(input_dir).exists():
             sys.exit('source path bad')
@@ -78,18 +73,11 @@ class CLI:
                 heading_dupe_test = '{} {}'.format('#' * heading, p(md).stem)
                 if heading_dupe_test in md_file_lines[0:1]:
                     insert_heading = 0
-            tags = self.build_tags(excluded_tags, md, insert_heading, tags_list)
+            tags = self.build_tags(
+                excluded_tags, md, insert_heading, tags_list)
             if insert_heading == 0 and '# ' in md_file_lines[0]:
                 md_file_lines.insert(1, tags)
             else:
                 md_file_lines.insert(0, tags)
             exported_file_name = output_dir + p(md).name
             write_list(exported_file_name, md_file_lines)
-
-
-# def main():
-#     """COMMANDLINE OPTIONS"""
-#     pass
-#
-# if __name__ == '__main__':
-#     sys.exit(main())
