@@ -7,7 +7,7 @@ Author: rockhazard
 Date: 2022
 """
 from subprocess import run, CalledProcessError
-from logmark_cli import CLI as lm_cli
+from logmark_cli import CLI
 import PySimpleGUI as sg  # type: ignore
 # import PySimpleGUIQt as sg  # type: ignore
 # import PySimpleGUIWeb as sg  # type: ignore
@@ -23,7 +23,7 @@ class GUI:
         self._state = dict(
             version='v0.1b "Chedder"',
         )
-
+        self.lm_cli = CLI()
         # tooltips
         self.optional_text = 'Optional comma-separated list of tags to add to all files'
         self.source_dir_tip = 'Please enter an absolute path.'
@@ -97,9 +97,9 @@ class GUI:
                 break
             if event == '-EXPORT-':
                 try:
-                    lm_cli.export_files(values['-SOURCE_DIR-'], values['-OUTPUT_DIR-'],
-                                        values['-HEADING-'], values['-SUPPRESS_DUPES-'],
-                                        global_tags)
+                    self.lm_cli.export_files(values['-SOURCE_DIR-'], values['-OUTPUT_DIR-'],
+                                             values['-HEADING-'], values['-SUPPRESS_DUPES-'],
+                                             global_tags)
                 except ValueError as error:
                     print(error)
                     window['-STATUS-'].update(error)

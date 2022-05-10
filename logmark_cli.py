@@ -45,7 +45,7 @@ class CLI:
             pages.append(f'[[{tag}]]')
         if opt_tags:
             for tag in opt_tags:
-                pages.append(f'[[{tag}]]')
+                pages.append(f'[[{tag.strip()}]]')
 
         if write_heading > 6:
             sys.exit('operation not complete: heading level must be 6 or less')
@@ -64,7 +64,7 @@ class CLI:
             sys.exit('destination path bad')
         # esnure files are exported inside named dir
         if not output_dir.endswith('/'):
-            output_dir = f'{output_dir}/'
+            output_dir = str(p(output_dir).joinpath(' /')).rstrip()
 
         md_paths_list = self.build_file_list(input_dir)
         excluded_tags = len(p(input_dir).parts)

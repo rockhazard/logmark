@@ -27,9 +27,9 @@ def main():
         gui.main_loop()
     else:
         lm_cli = CLI()
-        args = Arguments()
-        lm_cli.export_files(args.INPUT_DIR, args.OUTPUT_DIR, args.heading,
-                            args.remove_duplicates, args.tags)
+        cli_args = Arguments()
+        lm_cli.export_files(cli_args.args.INPUT_DIR, cli_args.args.OUTPUT_DIR, cli_args.args.heading,
+                            cli_args.args.remove_duplicates, cli_args.args.tags)
 
 
 if __name__ == '__main__':
