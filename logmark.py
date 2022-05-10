@@ -55,6 +55,9 @@ def export_files(input_dir, output_dir, heading, remove_duplicates, tags_list):
         sys.exit('source path bad')
     if not p(output_dir).exists():
         sys.exit('destination path bad')
+    # esnure files are exported inside named dir
+    if not output_dir.endswith('/'):
+        output_dir = f'{output_dir}/'
 
     md_paths_list = build_file_list(input_dir)
     excluded_tags = len(p(input_dir).parts)

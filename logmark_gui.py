@@ -17,12 +17,15 @@ version = lm.version()
 # sg.SetIcon(icon=None)
 # sg.theme('LightBlue3')
 sg.theme('DarkGrey11')
-sg.set_options(font='Roboto')
+sg.set_options(font='Roboto 16')
 
 # tooltips
 optional_text = 'Optional comma-separated list of tags to add to all files'
 source_dir_tip = 'Please enter an absolute path.'
 output_dir_tip = 'Please enter an absolute path with a trailing "/".'
+
+# file browser button: FolderBrowse(button_text = "Browse", target = (col,row), initial_folder = None, key = None)
+# https://pysimplegui.readthedocs.io/en/latest/call%20reference/#pre-defined-buttons-use-in-your-layout
 layout = [
     # Row  1
     [sg.Text('Choose Heading Level'), sg.Spin([1, 2, 3, 4, 5, 6], pad=(4, 2),
@@ -30,20 +33,35 @@ layout = [
         sg.Text('Suppress Duplicate Headings'),
         sg.Checkbox(text='', enable_events=True, key="-SUPPRESS_DUPES-")],
     # Row  2
-    [sg.Text('Global Tag List'), sg.Input(key='-GLOBAL_TAGS-', border_width=0,
+    [sg.Text('Global Tag List'), sg.Input(key='-GLOBAL_TAGS-',
+                                          # border_width=0,
                                           expand_x=True, tooltip=optional_text)],
     # Row  3
     [sg.Text('Source Directory'), sg.Input(tooltip=source_dir_tip,
                                            key='-SOURCE_DIR-', expand_x=True,
-                                           border_width=0)],
+                                           # border_width=0
+                                           ),
+        sg.FolderBrowse(button_text='Choose Source Directory',
+                        key='-PICK_SOURCE_DIR-')],
     # Row  4
     [sg.Text('Output Directory'), sg.Input(tooltip=output_dir_tip,
                                            key='-OUTPUT_DIR-', expand_x=True,
-                                           border_width=0)],
+                                           # border_width=0
+                                           ),
+        sg.FolderBrowse(button_text='Choose Output Directory',
+                        key='-PICK_OUTPUT_DIR-')],
+    [sg.Text('Status: ', key='-STATUS_LABEL-'), sg.Text('waiting to export',
+                                                        key='-STATUS-')],
     # Row  5
-    [sg.Button('Export', key='-EXPORT-', expand_x=True, border_width=0),
-     sg.Button('Help', key='-HELP-', expand_x=True, border_width=0),
-     sg.Button('Cancel', key='-CANCEL-', expand_x=True, border_width=0)],
+    [sg.Button('Export', key='-EXPORT-', expand_x=True,
+               # border_width=0
+               ),
+     sg.Button('Help', key='-HELP-', expand_x=True,
+               # border_width=0
+               ),
+     sg.Button('Cancel', key='-CANCEL-', expand_x=True,
+               # border_width=0
+               )],
 ]
 
 
@@ -60,7 +78,7 @@ while True:
                 'No default browser found: please visit https://github.com/rockhazard/logmark for help.')
 
     if values['-GLOBAL_TAGS-']:
-        global_tags = values['i-GLOBAL_TAGS-'].split(',')
+        global_tags = values['-GLOBAL_TAGS-'].split(',')
     else:
         global_tags = []
 
@@ -73,8 +91,11 @@ while True:
                             global_tags)
         except ValueError as error:
             print(error)
-            # window['-RESULTS-'].update(error)
+            window['-STATUS-'].update(error)
         else:
-            print(f"files exported to {values['-OUTPUT_DIR-']}")
-            break
+            export_msg = f"files exported to {values['-OUTPUT_DIR-']}"
+            print(export_msg)
+            window['-STATUS-'].update(export_msg)
+    if event == '-FOLDER-':
+        print(values['-FOLDER-'])
 window.close()
