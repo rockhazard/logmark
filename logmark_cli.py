@@ -13,14 +13,12 @@ author: rockhazard
 import sys
 from pathlib import Path as p
 from common import read_list, write_list
-# from version import VERSION
 
 
 class CLI:
     """CLI methods"""
 
     def __init__(self, **kwargs):  # classwide perams
-        # User's home directory
         self._state = kwargs
 
     def build_file_list(self, notebooks):

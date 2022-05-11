@@ -13,14 +13,12 @@ author: rockhazard
 
 import argparse
 from textwrap import dedent
-# from version import VERSION
 
 
 class Arguments:
     """CLI arguments"""
 
     def __init__(self, **kwargs):  # classwide perams
-        # User's home directory
         self._state = kwargs
 
         self.parser = argparse.ArgumentParser(

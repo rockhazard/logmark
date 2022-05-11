@@ -7,6 +7,7 @@ Author: rockhazard
 Date: 2022
 """
 from subprocess import run, CalledProcessError
+from pathlib import Path as p
 from logmark_cli import CLI
 # from version import VERSION
 import PySimpleGUI as sg  # type: ignore
@@ -22,6 +23,7 @@ class GUI:
         # User's home directory
         self.lm_cli = CLI()
         self._state = kwargs
+        self.home = str(p.home())
         # tooltips
         self.optional_text = 'Optional comma-separated list of tags'
         self.source_dir_tip = 'Please enter an absolute path.'
@@ -53,6 +55,7 @@ class GUI:
                                                    # border_width=0
                                                    ),
                 sg.FolderBrowse(button_text='Choose Source Directory',
+                                initial_folder=self.home,
                                 key='-PICK_SOURCE_DIR-')],
             # Row  4
             [sg.Text('Output Directory'), sg.Input(tooltip=self.output_dir_tip,
@@ -61,6 +64,7 @@ class GUI:
                                                    # border_width=0
                                                    ),
                 sg.FolderBrowse(button_text='Choose Output Directory',
+                                initial_folder=self.home,
                                 key='-PICK_OUTPUT_DIR-')],
             [sg.Text('Status: ', key='-STATUS_LABEL-'),
              sg.Text('waiting to export', key='-STATUS-')],
@@ -71,7 +75,7 @@ class GUI:
              sg.Button('Help', key='-HELP-', expand_x=True,
                        # border_width=0
                        ),
-             sg.Button('Cancel', key='-CANCEL-', expand_x=True,
+             sg.Button('Exit', key='-EXIT-', expand_x=True,
                        # border_width=0
                        )],
         ]
@@ -94,7 +98,7 @@ class GUI:
             else:
                 global_tags = []
 
-            if event in (sg.WIN_CLOSED, '-CANCEL-'):
+            if event in (sg.WIN_CLOSED, '-EXIT-'):
                 break
             if event == '-EXPORT-':
                 try:

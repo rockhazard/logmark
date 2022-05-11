@@ -14,11 +14,10 @@ import sys
 from logmark_args import Arguments
 from logmark_cli import CLI
 from logmark_gui import GUI
-from version import VERSION
 
 
 def main():
-
+    VERSION = 'v0.1b "Chedder"'
     if len(sys.argv) == 1:
         gui = GUI(_version=VERSION)
         gui.main_loop()

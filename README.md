@@ -42,7 +42,10 @@ _/home/user/notes/joplin-backup_ is ignored as a source of page references becau
 
 ## Requires
 
+_only needed when run from source files_
 - python 3.5+
+- Python3 Tkinter
+- PySimpleGui
 
 ## Current Issues and Limitations
 
