@@ -8,31 +8,34 @@ Date: 2022
 """
 from subprocess import run, CalledProcessError
 from pathlib import Path as p
-from logmark_cli import CLI
-# from version import VERSION
 import PySimpleGUI as sg  # type: ignore
-# import PySimpleGUIQt as sg  # type: ignore
-# import PySimpleGUIWeb as sg  # type: ignore
-# import PySimpleGUIWx as sg # type: ignore
+from logmark_logic import CoreLogic
+
 
 
 class GUI:
-    """CLI methods"""
+    """optional logmark gui"""
 
-    def __init__(self, **kwargs):  # classwide perams
-        # User's home directory
-        self.lm_cli = CLI()
+    def __init__(self, icon, logic=CoreLogic(), **kwargs):
+        # User home directory
         self._state = kwargs
+        self.logic = logic
+        if not icon:
+            self.title = False
+            self.icon = None
+        else:
+            self.title = True
+            self.icon = icon
         self.home = str(p.home())
         # tooltips
-        self.optional_text = 'Optional comma-separated list of tags'
+        self.optional_text = 'optional comma-separated list of tags to insert in all notes'
         self.source_dir_tip = 'Please enter an absolute path.'
         self.output_dir_tip = 'Please enter an absolute path.'
 
         # theme and style options
         sg.theme('DarkGrey11')
+        # sg.theme('SystemDefaultForReal')
         sg.set_options(font='Roboto 16')
-        # sg.SetIcon(icon=None)
         # sg.theme('LightBlue3')
 
         self.layout = [
@@ -45,44 +48,58 @@ class GUI:
                             key="-SUPPRESS_DUPES-")],
             # Row  2
             [sg.Text('Global Tag List'), sg.Input(key='-GLOBAL_TAGS-',
-                                                  # border_width=0,
+                                                  border_width=0,
                                                   expand_x=True,
                                                   tooltip=self.optional_text)],
             # Row  3
-            [sg.Text('Source Directory'), sg.Input(tooltip=self.source_dir_tip,
-                                                   key='-SOURCE_DIR-',
-                                                   expand_x=True,
-                                                   # border_width=0
-                                                   ),
+            [sg.Text('Notes Source Directory'), sg.Input(tooltip=self.source_dir_tip,
+                                                         key='-SOURCE_DIR-',
+                                                         expand_x=True,
+                                                         border_width=0
+                                                         ),
                 sg.FolderBrowse(button_text='Choose Source Directory',
                                 initial_folder=self.home,
                                 key='-PICK_SOURCE_DIR-')],
             # Row  4
-            [sg.Text('Output Directory'), sg.Input(tooltip=self.output_dir_tip,
-                                                   key='-OUTPUT_DIR-',
-                                                   expand_x=True,
-                                                   # border_width=0
-                                                   ),
+            [sg.Text('Notes Output Directory'), sg.Input(tooltip=self.output_dir_tip,
+                                                         key='-OUTPUT_DIR-',
+                                                         expand_x=True,
+                                                         border_width=0
+                                                         ),
                 sg.FolderBrowse(button_text='Choose Output Directory',
                                 initial_folder=self.home,
                                 key='-PICK_OUTPUT_DIR-')],
-            [sg.Text('Status: ', key='-STATUS_LABEL-'),
-             sg.Text('waiting to export', key='-STATUS-')],
             # Row  5
-            [sg.Button('Export', key='-EXPORT-', expand_x=True,
-                       # border_width=0
+            [sg.Button('Export', key='-EXPORT-',
+                       expand_x=True,
+                       border_width=0
                        ),
-             sg.Button('Help', key='-HELP-', expand_x=True,
-                       # border_width=0
+             sg.Button('Help', key='-HELP-',
+                       expand_x=True,
+                       border_width=0
                        ),
-             sg.Button('Exit', key='-EXIT-', expand_x=True,
-                       # border_width=0
+             sg.Button('Exit', key='-EXIT-',
+                       expand_x=True,
+                       border_width=0
                        )],
+            # Row 6
+            [sg.Text('Status:  waiting to export',
+                     expand_x=True,
+                     background_color='black', key='-STATUS-')],
+
+            # StatusBar won't update to display -OUTPUT_DIR- value
+            # [sg.StatusBar('Status: waiting to export', relief='solid',
+            #               enable_events=True, p=2, background_color='black',
+            #               key='-STATUS-')],
         ]
 
     def main_loop(self):
-        window = sg.Window(f'Logmark {self._state["_version"]}', self.layout)
+        """load gui"""
+        print(self.icon)
+        window = sg.Window(f'Logmark {self._state["_version"]}', self.layout,
+                           use_custom_titlebar=self.title, titlebar_icon=self.icon)
         help = 'Please visit https://github.com/rockhazard/logmark for help.'
+        window.set_icon(icon='icons/logmark_light_icon_24x24.png')
         while True:
             event, values = window.read()
 
@@ -102,16 +119,17 @@ class GUI:
                 break
             if event == '-EXPORT-':
                 try:
-                    self.lm_cli.export_files(values['-SOURCE_DIR-'],
-                                             values['-OUTPUT_DIR-'],
-                                             values['-HEADING-'],
-                                             values['-SUPPRESS_DUPES-'],
-                                             global_tags)
+                    self.logic.export_files(values['-SOURCE_DIR-'],
+                                            values['-OUTPUT_DIR-'],
+                                            values['-HEADING-'],
+                                            values['-SUPPRESS_DUPES-'],
+                                            global_tags)
                 except ValueError as error:
                     print(error)
-                    window['-STATUS-'].update(error)
+                    window['-STATUS-'].update(f'Status: {error}')
                 else:
-                    export_msg = f"files exported to {values['-OUTPUT_DIR-']}"
+                    export_msg = "Status: files exported to {}".format(
+                        values['-OUTPUT_DIR-'])
                     print(export_msg)
                     window['-STATUS-'].update(export_msg)
-        window.close()
+            window.close()

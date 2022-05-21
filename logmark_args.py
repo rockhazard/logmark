@@ -16,9 +16,9 @@ from textwrap import dedent
 
 
 class Arguments:
-    """CLI arguments"""
+    """CoreLogic arguments"""
 
-    def __init__(self, **kwargs):  # classwide perams
+    def __init__(self, **kwargs):
         self._state = kwargs
 
         self.parser = argparse.ArgumentParser(
@@ -41,18 +41,18 @@ class Arguments:
         self.parser.add_argument('OUTPUT_DIR',
                                  help='directory to place the newly-tagged files \
                             (use trailing slash)')
-        self.parser.add_argument('-t', '--tags',
-                                 help='insert a list of tags at the top of every file \
-                            after the directory tags', type=str, nargs='+',
-                                 default=None)
+        self.parser.add_argument('--version', help='print version info then exit',
+                                 version=f'logmark {self._state["_version"]}, GPL3.0 © 2022, by rockhazard',
+                                 action='version')
         self.parser.add_argument('-l', '--heading',
                                  help='write the filename (with no extension) as the page\
                              heading with a numerical argument for the heading level \
                              (e.g. "-l 3" writes "### filename")', type=int,
                                  metavar='HEADING_LEVEL', default=1)
-        self.parser.add_argument('-d', '--remove_duplicates',
-                                 help='prevent duplicating headings', action='store_true')
-        self.parser.add_argument('--version', help='print version info then exit',
-                                 version=f'logmark {self._state["_version"]}, GPL3.0 © 2022, by rockhazard',
-                                 action='version')
+        self.parser.add_argument('-d', '--prevent_duplicate_headings',
+                                 help='does not generate a heading from the filename if it is already in the file', action='store_true')
+        self.parser.add_argument('-t', '--tags',
+                                 help='insert a list of tags at the top of every file \
+                                 after the directory tags', type=str, nargs='+',
+                                 default=None)
         self.args = self.parser.parse_args()

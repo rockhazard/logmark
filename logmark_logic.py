@@ -15,10 +15,10 @@ from pathlib import Path as p
 from common import read_list, write_list
 
 
-class CLI:
-    """CLI methods"""
+class CoreLogic:
+    """CoreLogic methods"""
 
-    def __init__(self, **kwargs):  # classwide perams
+    def __init__(self, **kwargs):
         self._state = kwargs
 
     def build_file_list(self, notebooks):
@@ -48,7 +48,7 @@ class CLI:
             heading = ''
         return '{}{}\n'.format(heading, ' '.join(pages))
 
-    def export_files(self, input_dir, output_dir, heading, remove_duplicates,
+    def export_files(self, input_dir, output_dir, heading, prevent_duplicate_headings,
                      tags_list):
         """process the exporting of the provided files"""
         if not p(input_dir).exists():
@@ -65,9 +65,9 @@ class CLI:
             insert_heading = heading
             md_file_lines = read_list(md)
             # prevent duplicate headings
-            if remove_duplicates:
+            if prevent_duplicate_headings:
                 # sometimes the filename is an existing heading in the file
-                # in this case remove_duplicates will prevent repeated headings
+                # in this case prevent_duplicate_headings will prevent repeated headings
                 heading_dupe_test = '{} {}'.format('#' * heading, p(md).stem)
                 if heading_dupe_test in md_file_lines[0:1]:
                     insert_heading = 0
