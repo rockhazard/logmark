@@ -29,8 +29,10 @@ class CoreLogic:
 
     def build_tags(self, excluded_tags, md_file_path, write_heading=0,
                    opt_tags=None):
-        """excluded_tags excludes notes' parent dirs from tag list e.g.
-        'docs' in 'docs/notes/file.md' will not become a tag in file.md)"""
+                   
+        """Peram excluded_tags excludes notes' parent dirs from tag list e.g.
+        'docs' in 'docs/notes/file.md' will not become a tag in file.md)
+        """
         pages = []
         path_tags = p(md_file_path).parts
         for tag in path_tags[excluded_tags:-1]:
@@ -48,9 +50,10 @@ class CoreLogic:
             heading = ''
         return '{}{}\n'.format(heading, ' '.join(pages))
 
-    def export_files(self, input_dir, output_dir, heading, prevent_duplicate_headings,
+    def export_files(self, input_dir, output_dir, heading,
+                     prevent_duplicate_headings,
                      tags_list):
-        """process the exporting of the provided files"""
+        """Process the exporting of the provided files."""
         if not p(input_dir).exists():
             sys.exit('source path bad')
         if not p(output_dir).exists():

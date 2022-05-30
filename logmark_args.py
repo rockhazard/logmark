@@ -36,23 +36,31 @@ class Arguments:
             Logmark is developed by rockhazard and licensed under GPL3.0. There are
             no warranties expressed or implied.
             """))
-        self.parser.add_argument('INPUT_DIR',
-                                 help='directory of the original files')
-        self.parser.add_argument('OUTPUT_DIR',
-                                 help='directory to place the newly-tagged files \
-                            (use trailing slash)')
+        self.required_args = self.parser.add_argument_group(
+            'required arguments')
+        self.required_args.add_argument('-i', '--INPUT_DIR', metavar='PATH',
+                                        required=True,
+                                        help='directory of the original files')
+        self.required_args.add_argument('-o', '--OUTPUT_DIR', metavar='PATH',
+                                        required=True,
+                                        help='directory to place the \
+                                        newly-tagged files')
         self.parser.add_argument('--version', help='print version info then exit',
-                                 version=f'logmark {self._state["_version"]}, GPL3.0 © 2022, by rockhazard',
+                                 version=f'logmark {self._state["_version"]},\
+                                 GPL3.0 © 2022, by rockhazard',
                                  action='version')
         self.parser.add_argument('-l', '--heading',
-                                 help='write the filename (with no extension) as the page\
-                             heading with a numerical argument for the heading level \
-                             (e.g. "-l 3" writes "### filename")', type=int,
+                                 help='write the filename (with no extension)\
+                                 as the page heading with a numerical argument\
+                                 for the heading level (e.g. "-l 3" writes\
+                                 "### filename")', type=int,
                                  metavar='HEADING_LEVEL', default=1)
         self.parser.add_argument('-d', '--prevent_duplicate_headings',
-                                 help='does not generate a heading from the filename if it is already in the file', action='store_true')
+                                 help='does not generate a heading from the\
+                                 filename if it is already in the file',
+                                 action='store_true')
         self.parser.add_argument('-t', '--tags',
-                                 help='insert a list of tags at the top of every file \
-                                 after the directory tags', type=str, nargs='+',
-                                 default=None)
+                                 help='insert a list of tags at the top of\
+                                 every fileafter the directory tags', type=str,
+                                 nargs='+', default=None)
         self.args = self.parser.parse_args()

@@ -12,9 +12,8 @@ import PySimpleGUI as sg  # type: ignore
 from logmark_logic import CoreLogic
 
 
-
 class GUI:
-    """optional logmark gui"""
+    """Optional logmark gui."""
 
     def __init__(self, icon, logic=CoreLogic(), **kwargs):
         # User home directory
@@ -99,7 +98,7 @@ class GUI:
         window = sg.Window(f'Logmark {self._state["_version"]}', self.layout,
                            use_custom_titlebar=self.title, titlebar_icon=self.icon)
         help = 'Please visit https://github.com/rockhazard/logmark for help.'
-        window.set_icon(icon='icons/logmark_light_icon_24x24.png')
+        window.set_icon(icon='icon.png')
         while True:
             event, values = window.read()
 
@@ -132,4 +131,4 @@ class GUI:
                         values['-OUTPUT_DIR-'])
                     print(export_msg)
                     window['-STATUS-'].update(export_msg)
-            window.close()
+        window.close()
