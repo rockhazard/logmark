@@ -28,7 +28,7 @@ _/home/user/notes/joplin-backup/webinars/journalism/investigative_journalism.md_
 
 And you run:
 
-`logmark.py --heading 2 /home/user/notes/joplin-backup/ my-exported-notes/`
+`logmark.py -l 2 -i /home/user/notes/joplin-backup/ -o my-exported-notes/`
 
 Then the _journalism.md_ file will be exported to `my-exported-notes/` and edited with a title and page references like so:
 
